@@ -1,0 +1,58 @@
+{% extends "shop/base.html" %}
+{% block title %}Boutique — Éclat & Style{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <h1 class="h3 mb-0">
+            {% if current_category %}{{ current_category.name }}{% else %}Tous nos produits{% endif %}
+        </h1>
+        <form method="get" class="d-flex align-items-center gap-2">
+            {% if current_category %}<input type="hidden" name="categorie" value="{{ current_category.slug }}">{% endif %}
+            {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+            <label class="small text-muted mb-0">Trier par</label>
+            <select name="tri" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="">Pertinence</option>
+                <option value="recent" {% if sort == "recent" %}selected{% endif %}>Plus récents</option>
+                <option value="prix_asc" {% if sort == "prix_asc" %}selected{% endif %}>Prix croissant</option>
+                <option value="prix_desc" {% if sort == "prix_desc" %}selected{% endif %}>Prix décroissant</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <h6 class="text-uppercase small fw-semibold text-muted">Catégories</h6>
+            <ul class="list-unstyled">
+                <li class="mb-1">
+                    <a href="{% url 'shop:product_list' %}" class="text-decoration-none {% if not current_category %}fw-bold text-dark{% else %}text-muted{% endif %}">
+                        Toutes les catégories
+                    </a>
+                </li>
+                {% for cat in categories %}
+                <li class="mb-1">
+                    <a href="{% url 'shop:product_list' %}?categorie={{ cat.slug }}"
+                       class="text-decoration-none {% if current_category.slug == cat.slug %}fw-bold text-dark{% else %}text-muted{% endif %}">
+                        {{ cat.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-lg-9">
+            {% if query %}
+            <p class="text-muted small">Résultats pour « {{ query }} »</p>
+            {% endif %}
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-6 col-md-4">
+                    {% include "shop/_product_card.html" %}
+                </div>
+                {% empty %}
+                <p class="text-muted">Aucun produit trouvé.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "shop/base.html" %}
+{% block title %}Connexion — Éclat & Style{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="mx-auto" style="max-width:420px;">
+        <h1 class="h3 mb-4 text-center">Connexion</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Nom d'utilisateur</label>
+                {{ form.username }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mot de passe</label>
+                {{ form.password }}
+            </div>
+            {% if form.errors %}
+            <p class="text-danger small">Identifiants incorrects. Réessayez.</p>
+            {% endif %}
+            <button type="submit" class="btn btn-brand w-100">Se connecter</button>
+        </form>
+        <p class="text-center small text-muted mt-3">
+            Pas encore de compte ? <a href="{% url 'accounts:signup' %}">Inscrivez-vous</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

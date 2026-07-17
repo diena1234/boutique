@@ -1,0 +1,94 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-lg-3 col-6">
+        <div class="small-box text-white p-3" style="background:#23201c;">
+            <h3 class="mb-0">{{ stats_total_orders }}</h3>
+            <p class="mb-0">Commandes totales</p>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box text-white p-3" style="background:#b8895f;">
+            <h3 class="mb-0">{{ stats_revenue_total|floatformat:0 }} FCFA</h3>
+            <p class="mb-0">Chiffre d'affaires total</p>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box text-white p-3" style="background:#d39e6c;">
+            <h3 class="mb-0">{{ stats_pending_orders }}</h3>
+            <p class="mb-0">Commandes en attente</p>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box text-white p-3" style="background:#8a6d3b;">
+            <h3 class="mb-0">{{ stats_products_count }}</h3>
+            <p class="mb-0">Produits actifs</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><strong>Chiffre d'affaires — 7 derniers jours</strong></div>
+            <div class="card-body">
+                <canvas id="salesChart" height="90"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><strong>Top 5 produits vendus</strong></div>
+            <ul class="list-group list-group-flush">
+                {% for p in stats_top_products %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ p.product_name }}
+                    <span class="badge" style="background:#b8895f;">{{ p.total_qty }} vendus</span>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">Aucune vente pour le moment.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if stats_low_stock_products %}
+        <div class="card mt-3">
+            <div class="card-header"><strong>⚠ Stock faible</strong></div>
+            <ul class="list-group list-group-flush">
+                {% for prod in stats_low_stock_products %}
+                <li class="list-group-item d-flex justify-content-between">
+                    {{ prod.name }}
+                    <span class="badge bg-danger">{{ prod.stock }} restant{{ prod.stock|pluralize }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{{ stats_chart_labels|json_script:"chart-labels" }}
+{{ stats_chart_data|json_script:"chart-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+const chartLabels = JSON.parse(document.getElementById('chart-labels').textContent);
+const chartData = JSON.parse(document.getElementById('chart-data').textContent);
+
+new Chart(document.getElementById('salesChart'), {
+    type: 'bar',
+    data: {
+        labels: chartLabels,
+        datasets: [{
+            label: "Chiffre d'affaires (FCFA)",
+            data: chartData,
+            backgroundColor: '#b8895f'
+        }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+</script>
+
+{{ block.super }}
+{% endblock %}

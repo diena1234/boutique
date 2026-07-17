@@ -1,0 +1,34 @@
+{% extends "shop/base.html" %}
+{% block title %}Mes commandes — Éclat & Style{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h1 class="h3 mb-4">Mes commandes</h1>
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr class="text-muted small text-uppercase">
+                    <th>N°</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                    <td><span class="badge bg-secondary">{{ order.get_status_display }}</span></td>
+                    <td>{{ order.total|floatformat:0 }} FCFA</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted">Vous n'avez pas encore passé de commande.</p>
+    <a href="{% url 'shop:product_list' %}" class="btn btn-brand">Découvrir la boutique</a>
+    {% endif %}
+</div>
+{% endblock %}

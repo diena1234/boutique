@@ -1,0 +1,63 @@
+{% extends "shop/base.html" %}
+{% block title %}Mon panier — Éclat & Style{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h1 class="h3 mb-4">Mon panier</h1>
+
+    {% if cart|length > 0 %}
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr class="text-muted small text-uppercase">
+                    <th>Produit</th>
+                    <th>Prix unitaire</th>
+                    <th style="width:140px;">Quantité</th>
+                    <th>Sous-total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width:60px;height:60px;background:var(--color-cream);border-radius:8px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                                {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" style="width:100%;height:100%;object-fit:cover;">
+                                {% else %}🖼️{% endif %}
+                            </div>
+                            <a href="{{ item.product.get_absolute_url }}" class="text-decoration-none text-dark">{{ item.product.name }}</a>
+                        </div>
+                    </td>
+                    <td>{{ item.price|floatformat:0 }} FCFA</td>
+                    <td>
+                        <form method="post" action="{% url 'shop:cart_update' item.product.id %}" class="d-flex">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm me-1" style="width:70px;">
+                            <button class="btn btn-sm btn-outline-dark">OK</button>
+                        </form>
+                    </td>
+                    <td class="fw-semibold">{{ item.total_price|floatformat:0 }} FCFA</td>
+                    <td>
+                        <a href="{% url 'shop:cart_remove' item.product.id %}" class="btn btn-sm btn-outline-danger">Retirer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <div class="text-end" style="min-width:280px;">
+            <p class="h5">Total : <span class="price">{{ cart.get_total_price|floatformat:0 }} FCFA</span></p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-outline-brand me-2">Continuer mes achats</a>
+            <a href="{% url 'shop:checkout' %}" class="btn btn-brand">Passer la commande</a>
+        </div>
+    </div>
+
+    {% else %}
+    <p class="text-muted">Votre panier est vide pour le moment.</p>
+    <a href="{% url 'shop:product_list' %}" class="btn btn-brand">Découvrir la boutique</a>
+    {% endif %}
+</div>
+{% endblock %}

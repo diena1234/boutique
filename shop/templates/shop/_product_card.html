@@ -1,0 +1,25 @@
+<div class="card product-card">
+    <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+        <div class="product-img-wrap">
+            {% if product.is_on_sale %}<span class="badge-sale">-{{ product.discount_percent }}%</span>{% endif %}
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <span class="product-placeholder">🖼️</span>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <p class="small text-muted mb-1">{{ product.category.name }}</p>
+            <h3 class="h6 mb-2">{{ product.name }}</h3>
+            <div>
+                <span class="price">{{ product.price|floatformat:0 }} FCFA</span>
+                {% if product.is_on_sale %}
+                <span class="price-old ms-2">{{ product.old_price|floatformat:0 }} FCFA</span>
+                {% endif %}
+            </div>
+            {% if not product.in_stock %}
+            <p class="small text-danger mt-1 mb-0">Rupture de stock</p>
+            {% endif %}
+        </div>
+    </a>
+</div>

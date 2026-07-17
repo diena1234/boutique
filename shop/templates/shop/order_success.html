@@ -1,0 +1,25 @@
+{% extends "shop/base.html" %}
+{% block title %}Commande confirmée — Éclat & Style{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <div style="font-size:3rem;">✅</div>
+    <h1 class="h3 mt-3">Merci {{ order.full_name }} !</h1>
+    <p class="text-muted">Votre commande #{{ order.id }} a bien été enregistrée. Nous vous contacterons au {{ order.phone }} pour la livraison.</p>
+
+    <div class="mx-auto text-start border rounded-3 p-4 mt-4" style="max-width:500px; background:var(--color-cream);">
+        {% for item in order.items.all %}
+        <div class="d-flex justify-content-between small mb-2">
+            <span>{{ item.product_name }} &times; {{ item.quantity }}</span>
+            <span>{{ item.subtotal|floatformat:0 }} FCFA</span>
+        </div>
+        {% endfor %}
+        <hr>
+        <div class="d-flex justify-content-between fw-semibold">
+            <span>Total</span>
+            <span>{{ order.total|floatformat:0 }} FCFA</span>
+        </div>
+    </div>
+
+    <a href="{% url 'shop:product_list' %}" class="btn btn-brand mt-4">Continuer mes achats</a>
+</div>
+{% endblock %}

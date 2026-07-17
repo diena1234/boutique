@@ -1,0 +1,62 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="hero">
+    <div class="container text-center">
+        <p class="text-uppercase small fw-semibold" style="color:var(--color-primary); letter-spacing:0.15em;">Nouvelle collection</p>
+        <h1>Sublimez votre style au quotidien</h1>
+        <p class="lead text-muted mx-auto" style="max-width:600px;">
+            Bijoux, coques de téléphone, chaussures et accessoires tendance — livrés partout à Dakar.
+        </p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-brand mt-3">Découvrir la boutique</a>
+    </div>
+</section>
+
+<section class="container py-5">
+    <h2 class="section-title">Nos catégories</h2>
+    <div class="row g-4">
+        {% for cat in categories %}
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="{% url 'shop:product_list' %}?categorie={{ cat.slug }}" class="category-card">
+                {% if cat.image %}
+                    <img src="{{ cat.image.url }}" alt="{{ cat.name }}">
+                {% else %}
+                    <div class="category-placeholder">🛍️</div>
+                {% endif %}
+                <div class="cat-label">{{ cat.name }}</div>
+            </a>
+        </div>
+        {% empty %}
+        <p class="text-muted">Aucune catégorie pour le moment. Ajoutez-en depuis l'espace admin.</p>
+        {% endfor %}
+    </div>
+</section>
+
+{% if featured_products %}
+<section class="container py-4">
+    <h2 class="section-title">Sélection du moment</h2>
+    <div class="row g-4">
+        {% for product in featured_products %}
+        <div class="col-6 col-md-4 col-lg-3">
+            {% include "shop/_product_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<section class="container py-4 mb-5">
+    <h2 class="section-title">Nouveautés</h2>
+    <div class="row g-4">
+        {% for product in latest_products %}
+        <div class="col-6 col-md-4 col-lg-3">
+            {% include "shop/_product_card.html" %}
+        </div>
+        {% empty %}
+        <p class="text-muted">Aucun produit publié pour le moment. Ajoutez vos articles depuis l'espace admin.</p>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

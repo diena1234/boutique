@@ -1,0 +1,64 @@
+{% extends "shop/base.html" %}
+{% block title %}Finaliser la commande — Éclat & Style{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h1 class="h3 mb-4">Finaliser ma commande</h1>
+    <div class="row g-5">
+        <div class="col-md-7">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Nom complet</label>
+                    {{ form.full_name }}
+                    {{ form.full_name.errors }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Téléphone</label>
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Adresse de livraison</label>
+                    {{ form.address }}
+                    {{ form.address.errors }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ville</label>
+                    {{ form.city }}
+                    {{ form.city.errors }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Notes (facultatif)</label>
+                    {{ form.notes }}
+                </div>
+                <button type="submit" class="btn btn-brand w-100">Confirmer la commande</button>
+                <p class="small text-muted mt-2 text-center">Paiement à la livraison. Notre équipe vous contactera pour confirmer.</p>
+            </form>
+        </div>
+
+        <div class="col-md-5">
+            <div class="border rounded-3 p-4" style="background:var(--color-cream);">
+                <h2 class="h5 mb-3">Récapitulatif</h2>
+                {% for item in cart %}
+                <div class="d-flex justify-content-between small mb-2">
+                    <span>{{ item.product.name }} &times; {{ item.quantity }}</span>
+                    <span>{{ item.total_price|floatformat:0 }} FCFA</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between fw-semibold">
+                    <span>Total</span>
+                    <span>{{ cart.get_total_price|floatformat:0 }} FCFA</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
